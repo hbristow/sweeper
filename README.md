@@ -11,27 +11,29 @@ This small Python class provides a clean interface for sampling multiple paramet
 Example
 -------
 
-    # 1. Sample 400 values and iterate using named tuples
-    ps = sweeper.ParameterSweeper(400,
-            C = lambda: random.choice([0, 1, 2, 3, 4]),
-            x = lambda: numpy.random.uniform(0, 1),
-            y = lambda: numpy.random.standard_normal())
+```python
+# 1. Sample 400 values and iterate using named tuples
+ps = sweeper.ParameterSweeper(400,
+        C = lambda: random.choice([0, 1, 2, 3, 4]),
+        x = lambda: numpy.random.uniform(0, 1),
+        y = lambda: numpy.random.standard_normal())
 
-    for sample in ps:
-      minima = optimize(data, sample.x, sample.y, sample.C)
+for sample in ps:
+  minima = optimize(data, sample.x, sample.y, sample.C)
 
-    ---------
+---------
 
-    # 2. Sample infinite values and iterate using tuple unpacking
-    ps = sweeper.ParameterSweeper(
-            C = lambda: random.choice([0, 1, 2, 3, 4]),
-            x = lambda: numpy.random.uniform(0, 1),
-            y = lambda: numpy.random.standard_normal())
+# 2. Sample infinite values and iterate using tuple unpacking
+ps = sweeper.ParameterSweeper(
+        C = lambda: random.choice([0, 1, 2, 3, 4]),
+        x = lambda: numpy.random.uniform(0, 1),
+        y = lambda: numpy.random.standard_normal())
 
-    for C, x, y in ps:
-      minima = optimize(data, x, y, C)
-      if minima < eps:
-        break
+for C, x, y in ps:
+  minima = optimize(data, x, y, C)
+  if minima < eps:
+    break
+```
 
 Travelling Salesman Optimization
 --------------------------------
