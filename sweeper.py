@@ -243,9 +243,9 @@ if __name__ == '__main__':
               description='Randomly sample free parameters for fine tuning optimization algorithms',
               add_help=False)
 
-  parser.add_argument('-h', '--help', action='store_true', help='show detailed docstring')
-  parser.add_argument('-t', '--test', action='store_true', help='run the tests')
-  parser.add_argument('-i', '--inline', action='store_true', help='sample parameters on the command line')
+  parser.add_argument('--help', action='store_true', help='show detailed docstring')
+  parser.add_argument('--test', action='store_true', help='run the tests')
+  parser.add_argument('--inline', action='store_true', help='sample parameters on the command line')
   args, unknown = parser.parse_known_args()
 
   # print docstring
