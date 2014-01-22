@@ -165,7 +165,35 @@ class TravellingSalesman(object):
 # UNIT TESTS
 # ----------------------------------------------------------------------------
 class TestParameterSweeper(unittest.TestCase):
-  pass
+  import random
+
+  def test_sequence_order(self):
+    g = (x for x in [1, 2])
+    ps = ParameterSweeper(2, x=g.next)
+    self.assertTrue(ps.next().x == 1)
+    self.assertTrue(ps.next().x == 2)
+
+  def test_sequence_terminates(self):
+    ps = ParameterSweeper(1, x=self.random.random)
+    ps.next()
+    self.assertRaises(StopIteration, ps.next)
+
+  def test_zero_samples(self):
+    ps = ParameterSweeper(0, x=self.random.random)
+    self.assertRaises(StopIteration, ps.next)
+
+  def test_negative_samples(self):
+    ps = ParameterSweeper(-10, x=self.random.random)
+    self.assertRaises(StopIteration, ps.next)
+
+  def test_reset(self):
+    ps = ParameterSweeper(1, x=self.random.random)
+    self.assertFalse(ps.finished)
+    ps.next()
+    self.assertTrue(ps.finished)
+    ps.reset()
+    self.assertFalse(ps.finished)
+
 
 class TestTravellingSalesman(unittest.TestCase):
   pass
