@@ -93,8 +93,8 @@ class ParameterSweeper(object):
       if samples > 10000:
         raise ValueError('The number of samples must be < 10,000 to solve the TSP')
       tsp = TravellingSalesman()
-      self.generators = tsp.optimize(samples, kwargs)
-      self.get_sample = self._optimized_sample
+      self.generators, _ = tsp.optimize(samples, kwargs)
+      self.get_sample    = self._optimized_sample
     else:
       # compute on the fly
       self.generators = kwargs
@@ -128,13 +128,18 @@ class ParameterSweeper(object):
 # ----------------------------------------------------------------------------
 # TRAVELLING SALESMAN
 # ----------------------------------------------------------------------------
+def has_numpy():
+  try:
+    import numpy as np
+    return True, np
+  except:
+    return False, None
+
 class TravellingSalesman(object):
   def __init__(self):
-    try:
-      import numpy as np
-    except ImportError:
+    available, self.np = has_numpy()
+    if not available:
       raise ImportError('Numpy is required to solve the TSP')
-    self.np = np
 
   def optimize(self, samples, parameters):
 
@@ -158,7 +163,7 @@ class TravellingSalesman(object):
       y.append(i)
 
     # permute the sampled data matrix
-    return X[y,:]
+    return X[y,:], y
 
 
 # ----------------------------------------------------------------------------
@@ -194,9 +199,22 @@ class TestParameterSweeper(unittest.TestCase):
     ps.reset()
     self.assertFalse(ps.finished)
 
+  def test_named_tuple_unpacking(self):
+    xg = (x for x in [1])
+    yg = (x for x in [2])
+    Cg = (x for x in [3])
+    ps = ParameterSweeper(1, y=yg.next, x=xg.next, C=Cg.next)
+    C, x, y = ps.next()
+    self.assertTrue(x == 1 and y == 2 and C == 3)
 
+@unittest.skipIf(not has_numpy(), 'Travelling Salesman requires numpy')
 class TestTravellingSalesman(unittest.TestCase):
-  pass
+  import random
+
+  def test_permutation_is_unique(self):
+    tsp  = TravellingSalesman()
+    X, y = tsp.optimize(100, {'x': self.random.random, 'y': self.random.random})
+    self.assertTrue(len(y) == len(set(y)))
 
 
 # ----------------------------------------------------------------------------
