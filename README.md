@@ -20,9 +20,9 @@ ps = sweeper.ParameterSweeper(400,
 
 for sample in ps:
   minima = optimize(data, sample.x, sample.y, sample.C)
+```
 
----------
-
+```python
 # 2. Sample infinite values and iterate using tuple unpacking
 ps = sweeper.ParameterSweeper(
         C = lambda: random.choice([0, 1, 2, 3, 4]),
@@ -33,9 +33,9 @@ for C, x, y in ps:
   minima = optimize(data, x, y, C)
   if minima < eps:
     break
+```
 
----------
-
+```bash
 # 3. Sample on the command line
 python sweeper.py --inline -x uniform 0 1 -y standard_normal | xargs python optimize.py
 ```
