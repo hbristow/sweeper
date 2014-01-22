@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import collections
 import unittest
 
@@ -7,7 +8,7 @@ import unittest
 # ----------------------------------------------------------------------------
 class ParameterSweeper(object):
   """
-  Randomly sample parameters over several distributions.
+  Randomly sample free parameters for fine tuning optimization algorithms
 
   Description
   ===========
@@ -173,5 +174,50 @@ class TestTravellingSalesman(unittest.TestCase):
 # ----------------------------------------------------------------------------
 # COMMAND LINE
 # ----------------------------------------------------------------------------
+def _inline_sample(parameters):
+  """
+  Generate random sample from a named numpy.random distribution
+  """
+  import numpy.random
+  str_rep = ''
+  for parameter, args in parameters.items():
+    distribution = args[0]
+    args = [float(arg) if '.' in arg else int(arg) for arg in args[1:]]
+    val  = getattr(numpy.random, distribution)(*tuple(args))
+    str_rep = ' '.join([str_rep, parameter, str(val)])
+  return str_rep
+
+
 if __name__ == '__main__':
-  unittest.main()
+  import sys
+  import argparse
+
+  # argument parser
+  parser = argparse.ArgumentParser(
+              description='Randomly sample free parameters for fine tuning optimization algorithms',
+              add_help=False)
+
+  parser.add_argument('-h', '--help', action='store_true')
+  parser.add_argument('-t', '--test', action='store_true')
+  parser.add_argument('-i', '--inline', action='store_true')
+  args, unknown = parser.parse_known_args()
+
+  # print docstring
+  if args.help:
+    help(ParameterSweeper)
+
+  # run tests
+  if args.test:
+    unittest.main(argv=sys.argv[1:])
+
+  # output sample of parameters to command line
+  if args.inline:
+    parameters = {}
+    key = None
+    for arg in unknown:
+      if arg.startswith('-'):
+        key = arg
+        parameters[key] = []
+      else:
+        parameters[key].append(arg)
+    print(_inline_sample(parameters))
