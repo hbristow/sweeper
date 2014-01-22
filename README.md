@@ -34,6 +34,8 @@ for C, x, y in ps:
   if minima < eps:
     break
 
+---------
+
 # 3. Sample on the command line
 python sweeper.py --inline -x uniform 0 1 -y standard_normal | xargs python optimize.py
 ```
